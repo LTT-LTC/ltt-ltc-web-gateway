@@ -1,0 +1,6 @@
+@LTC.WebGateWay_HostAddress = http://localhost:5062
+
+GET {{LTC.WebGateWay_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

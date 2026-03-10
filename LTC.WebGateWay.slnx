@@ -1,0 +1,6 @@
+<Solution>
+  <Folder Name="/shared/">
+    <Project Path="LTC.Shared.ServiceDefaults/LTC.Shared.ServiceDefaults.csproj" Id="b6c53ded-98f4-438e-9b9f-858645f77db6" />
+  </Folder>
+  <Project Path="LTC.WebGateWay/LTC.WebGateWay.csproj" Id="3ff918aa-d998-4a4c-8f8f-bd25b7a8a21b" />
+</Solution>

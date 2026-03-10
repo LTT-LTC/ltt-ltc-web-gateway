@@ -1,1 +1,0 @@
-dotnet run --project LTT.WebGateway --migrate-database
