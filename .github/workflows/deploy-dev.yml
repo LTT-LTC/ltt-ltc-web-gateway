@@ -1,0 +1,50 @@
+name: Deploy Dev - Web Gateway
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    env:
+      IMAGE_NAME: dranov220805/ltt-ltc-web-gateway
+      SERVICE_NAME: ltt-ltc-web-gateway
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Build and Push Docker Image
+        run: |
+          docker build -t $IMAGE_NAME:latest .
+          docker push $IMAGE_NAME:latest
+
+      - name: Connect to Tailscale
+        uses: tailscale/github-action@v2
+        with:
+          authkey: ${{ secrets.TS_AUTHKEY }}
+
+      - name: Setup SSH key
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_ed25519
+          chmod 600 ~/.ssh/id_ed25519
+          ssh-keyscan -H 100.109.240.84 >> ~/.ssh/known_hosts
+
+      - name: SSH Deploy
+        run: |
+          ssh dranov@100.109.240.84 << 'EOF'
+            cd /home/dranov/Desktop/ltt-ltc
+
+            docker compose pull ltt-ltc-web-gateway
+            docker compose up -d --no-deps ltt-ltc-web-gateway
+          EOF
