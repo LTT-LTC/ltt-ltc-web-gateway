@@ -33,21 +33,23 @@ jobs:
         with:
           authkey: ${{ secrets.TS_AUTHKEY }}
 
-      # SSH setup
-      - name: Setup SSH key
+      - name: Setup SSH
         run: |
           mkdir -p ~/.ssh
-          cat << 'EOF' > ~/.ssh/id_ed25519
-          ${{ secrets.SSH_PRIVATE_KEY }}
-          EOF
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_ed25519
           chmod 600 ~/.ssh/id_ed25519
-          ssh-keyscan -H 100.109.240.84 >> ~/.ssh/known_hosts9
+          ssh-keyscan -H 100.109.240.84 >> ~/.ssh/known_hosts
+          chmod 644 ~/.ssh/known_hosts
+
+      - name: Test SSH (optional but recommended)
+        run: |
+          ssh -o StrictHostKeyChecking=no dranov@100.109.240.84 "echo SSH OK"
 
       - name: SSH Deploy
         run: |
-          ssh dranov@100.109.240.84 << 'EOF'
+          ssh -o StrictHostKeyChecking=no dranov@100.109.240.84 << 'EOF'
             cd /home/dranov/Desktop/ltt-ltc
-      
+
             docker compose pull ltt-ltc-web-gateway
             docker compose up -d --no-deps ltt-ltc-web-gateway
           EOF
