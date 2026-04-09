@@ -60,4 +60,4 @@ Example route pattern:
 ## 6) Notes
 
 - Gateway itself does not own application business tables.
-- Data persistence is in downstream services, not in this project.
+- Data persistence is in downstream services, not in this project
