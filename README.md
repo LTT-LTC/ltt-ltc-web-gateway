@@ -8,6 +8,9 @@ It uses YARP-style reverse proxy configuration to route calls to downstream APIs
 
 - Administration API
 - Customer API
+- Movie API
+- Notification API
+- Payment API
 
 Main project:
 
@@ -16,7 +19,7 @@ Main project:
 ## 2) Prerequisites
 
 - .NET SDK 10+
-- Downstream APIs running (administration/customer) on configured URLs
+- Downstream APIs running (administration/customer/movie/notification/payment) on configured URLs
 
 ## 3) Configure and run
 
