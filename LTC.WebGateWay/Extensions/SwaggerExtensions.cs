@@ -22,11 +22,43 @@ namespace LTC.WebGateWay.Extensions
                         var paths = swagger.GetSection("Paths").GetChildren();
                         foreach (var path in paths)
                         {
-                            options.SwaggerEndpoint(path.Value!, clusterName);
+                            var endpoint = ToSwaggerUiRelativePath(path.Value);
+                            if (!string.IsNullOrWhiteSpace(endpoint))
+                            {
+                                options.SwaggerEndpoint(endpoint, clusterName);
+                            }
                         }
                     }
                 }
             }
+        }
+
+        private static string? ToSwaggerUiRelativePath(string? configuredPath)
+        {
+            if (string.IsNullOrWhiteSpace(configuredPath))
+            {
+                return null;
+            }
+
+            // Keep fully qualified URLs unchanged.
+            if (Uri.TryCreate(configuredPath, UriKind.Absolute, out _))
+            {
+                return configuredPath;
+            }
+
+            var trimmed = configuredPath.Trim();
+            if (trimmed.StartsWith('/'))
+            {
+                trimmed = trimmed[1..];
+            }
+
+            // Swagger UI route is "ltc/swagger"; using ../ keeps proxy/path-base prefixes.
+            if (trimmed.StartsWith("ltc/", StringComparison.OrdinalIgnoreCase))
+            {
+                return $"../{trimmed["ltc/".Length..]}";
+            }
+
+            return $"./{trimmed}";
         }
     }
 }
